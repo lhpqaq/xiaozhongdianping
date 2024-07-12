@@ -27,12 +27,10 @@ import static cn.hutool.core.bean.BeanUtil.beanToMap;
 import static com.xzdp.utils.RedisConstants.*;
 
 /**
- * <p>
- * 服务实现类
- * </p>
- *
- * @author 虎哥
- * @since 2021-12-22
+ extends ServiceImpl<UserMapper, User>：
+ •	这是使用MyBatis-Plus框架提供的通用实现类ServiceImpl。ServiceImpl类已经实现了大部分CRUD操作，继承这个类可以让UserServiceImpl类直接使用这些预定义的方法，而不需要自己实现。
+ •	UserMapper：这是一个Mapper接口，继承自MyBatis-Plus的BaseMapper，用于执行数据库的CRUD操作。
+ •	User：这是一个实体类，通常与数据库中的一张表对应，表示用户信息。
  */
 @Slf4j
 @Service

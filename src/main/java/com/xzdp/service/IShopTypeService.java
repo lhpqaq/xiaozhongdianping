@@ -1,5 +1,6 @@
 package com.xzdp.service;
 
+import com.xzdp.dto.Result;
 import com.xzdp.entity.ShopType;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IShopTypeService extends IService<ShopType> {
 
+    Result queryShopType();
 }
