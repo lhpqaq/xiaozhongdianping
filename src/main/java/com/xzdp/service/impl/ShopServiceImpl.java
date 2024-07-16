@@ -9,13 +9,13 @@ import com.xzdp.service.IShopService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.xzdp.utils.RedisConstants.CACHE_SHOP_KEY;
-import static com.xzdp.utils.RedisConstants.CACHE_SHOP_TTL;
+import static com.xzdp.utils.RedisConstants.*;
 
 /**
  * <p>
@@ -42,10 +42,15 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
             return Result.ok(shop);
         }
 
+        if (shopJson != null) {
+            return Result.fail("no exist shop1");
+        }
+
         Shop shop = getById(id);
 
         if (shop == null) {
-            return Result.fail("no exist shop");
+            stringRedisTemplate.opsForValue().set(key, "", CACHE_NULL_TTL, TimeUnit.MINUTES);
+            return Result.fail("no exist shop2");
         }
 
         stringRedisTemplate.opsForValue().set(key, JSONUtil.toJsonStr(shop));
@@ -53,5 +58,19 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
         stringRedisTemplate.expire(key, CACHE_SHOP_TTL, TimeUnit.MINUTES);
 
         return Result.ok(shop);
+    }
+
+    @Override
+    @Transactional
+    public Result update(Shop shop) {
+        Long id = shop.getId();
+        if (id == null) {
+            return Result.fail("id is null");
+        }
+
+        updateById(shop);
+
+        stringRedisTemplate.delete(CACHE_SHOP_KEY + id);
+        return Result.ok();
     }
 }
